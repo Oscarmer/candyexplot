@@ -19,18 +19,9 @@ class usuarios(models.Model):
 class producto(models.Model):
     id_pd = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, verbose_name="nombre")
-    imagen = models.ImageField(upload_to='imagenes/', null=True, verbose_name="imagen")
     descripcion = models.TextField(max_length=100, null=True, verbose_name="descripcion")
     precio = models.IntegerField(verbose_name="Precio base")
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
-
-    def __str__(self):
-        fila = "Nombre: " + self.nombre + " - Descripcion: " + self.descripcion
-        return fila
-
-    def delete(self, using= None, keep_parents= False):
-        self.imagen.storage.delete(self.imagen.name)
-        super().delete()
 
 class materia_s(models.Model):
     id_ms = models.AutoField(primary_key=True)
