@@ -1,11 +1,6 @@
-import string
-from tkinter import messagebox
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from .models import *
 from .forms import *
-from django.conf import settings
-from dataclasses import fields
 from datetime import datetime, date
 # Create your views here.
 
