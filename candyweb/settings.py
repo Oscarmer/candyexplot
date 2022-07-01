@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'candyweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd723tga85jvqd3',
-        'USER': 'apmfuratdmwaql',
-        'PASSWORD': '7b8fa6bfa53289520bba9d02674e9404008ca2e2bf1e738de6f7c39b6a788b23',
-        'HOST': 'ec2-52-72-56-59.compute-1.amazonaws.com',
+        'NAME': 'd1tmtlmi6pt63s',
+        'USER': 'dvcjmfyrmtwlnh',
+        'PASSWORD': '812ca4a252a8e79c61b55997285d83a71a5441947471ea923a21870d979f0e40',
+        'HOST': 'ec2-3-222-74-92.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
