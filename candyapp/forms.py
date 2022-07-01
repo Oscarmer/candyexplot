@@ -3,9 +3,9 @@ from django import forms
 from .models import *
 
 
-class snForm(forms.ModelForm):
+class snForm(forms.Form):
     name = forms.CharField(label="Nombre *")
-    password = forms.CharField(widget=forms.PasswordInput, label="contraseña *")
+    password = forms.CharField(widget=forms.PasswordInput, label="Contraseña *")
 
 class lgForm(forms.ModelForm):
     class Meta:

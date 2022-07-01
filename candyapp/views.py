@@ -7,7 +7,6 @@ from datetime import datetime, date
 def signup(request):
     formulario = snForm(request.POST or None, request.FILES or None)
     if formulario.is_valid():
-        print(formulario.data['contraseña'])
         if formulario.data['name'] == "Admincandy" and formulario.data['password'] == "AdminCandy#Explot172022":
             return redirect('lugar')
         else:
