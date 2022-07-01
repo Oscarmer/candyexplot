@@ -4,6 +4,16 @@ from .forms import *
 from datetime import datetime, date
 # Create your views here.
 
+def signup(request):
+    formulario = snForm(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        print(formulario.data['contraseña'])
+        if formulario.data['usuario'] == "Admincandy" and formulario.data['contraseña'] == "AdminCandy#Explot172022":
+            return redirect('lugar')
+        else:
+            return redirect('signup')
+    return render(request, "signup/index.html", {'formulario': formulario}) 
+
 def lugares(request):
     lugares = lugar.objects.all()
     return render(request, "lugar/index.html", {'lugares': lugares})

@@ -1,8 +1,14 @@
 from dataclasses import fields
-from django.db import models
 from django import forms
 from .models import *
 
+
+class snForm(forms.ModelForm):
+    name = forms.CharField(label="Nombre *")
+    password = forms.CharField(widget=forms.PasswordInput)
+    class Meta:
+        model=signup
+        fields='__all__'
 
 class lgForm(forms.ModelForm):
     class Meta:
