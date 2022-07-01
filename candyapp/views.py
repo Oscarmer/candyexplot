@@ -50,7 +50,7 @@ def agregar_pd(request, lg):
     if formulario.is_valid():
         formulario.save()
         return redirect('/'+str(lg)+'/'+'productos')
-    return render(request, "productos/crear.html", {'formulario': formulario})
+    return render(request, "Productos/crear.html", {'formulario': formulario})
 
 def editar_pd(request, id, lg):
     productos = producto.objects.get(id_pd=id)
@@ -58,7 +58,7 @@ def editar_pd(request, id, lg):
     if formulario.is_valid() and request.POST:
         formulario.save()
         return redirect('/'+str(lg)+'/'+'productos')
-    return render(request, "productos/editar.html", {'formulario': formulario})
+    return render(request, "Productos/editar.html", {'formulario': formulario})
 
 def eliminar_pd(request, id, lg):
     productos = producto.objects.get(id_pd=id)
