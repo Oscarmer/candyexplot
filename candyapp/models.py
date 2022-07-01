@@ -2,9 +2,6 @@
 from django.db import models
 
 # Create your models here.
-class signup(models.Model):
-    id_sn = models.AutoField(primary_key=True)
-    usuario = models.CharField(max_length=50, verbose_name="Usuario")
     
 class lugar(models.Model):
     id_lg = models.AutoField(primary_key=True)
