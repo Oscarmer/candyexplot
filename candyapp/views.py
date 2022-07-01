@@ -41,6 +41,8 @@ def productos(request, lg):
     for pd in productos:
         if pd.id_lg_id == lg:
             lista.append(pd)
+        else:
+            pass
     return render(request, "productos/pindex.html", {'productos': lista, 'lugar': lg})
 
 def agregar_pd(request, lg):
