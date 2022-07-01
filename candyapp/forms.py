@@ -5,10 +5,7 @@ from .models import *
 
 class snForm(forms.ModelForm):
     name = forms.CharField(label="Nombre *")
-    password = forms.CharField(widget=forms.PasswordInput)
-    class Meta:
-        model=signup
-        fields='__all__'
+    password = forms.CharField(widget=forms.PasswordInput, label="contraseña *")
 
 class lgForm(forms.ModelForm):
     class Meta:
