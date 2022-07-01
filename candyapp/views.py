@@ -8,7 +8,7 @@ def signup(request):
     formulario = snForm(request.POST or None, request.FILES or None)
     if formulario.is_valid():
         print(formulario.data['contraseña'])
-        if formulario.data['usuario'] == "Admincandy" and formulario.data['contraseña'] == "AdminCandy#Explot172022":
+        if formulario.data['name'] == "Admincandy" and formulario.data['password'] == "AdminCandy#Explot172022":
             return redirect('lugar')
         else:
             return redirect('signup')
