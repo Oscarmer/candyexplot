@@ -41,7 +41,7 @@ def productos(request, lg):
     for pd in productos:
         if pd.id_lg_id == lg:
             lista.append(pd)
-    return render(request, "Productos/pindex.html", {'productos': lista, 'lugar': lg})
+    return render(request, "productos/pindex.html", {'productos': lista, 'lugar': lg})
 
 def agregar_pd(request, lg):
     formulario = productoForm(request.POST or None, request.FILES or None)
