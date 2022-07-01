@@ -21,6 +21,7 @@
                     <th>contacto</th>
                     <th>Descripcion</th>
                     <th>Estado</th>
+                    <th>Ultima modificacion</th>
                     <th></th>
                 </tr>
             </thead>
@@ -39,6 +40,7 @@
                     <td>{{materias.contacto}}</td>
                     <td>{{materias.descripcion}}</td>
                     <td>{{materias.estado}}</td>
+                    <td>{{materias.fecha}}</td>
                     <td> 
                         <a name="" id="" class="btn btn-info" href="{% url 'editar_mp' lugar materias.id_mp %}" role="button">Editar</a> 
                         |  <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_mp' lugar materias.id_mp %}" role="button">Borrar</a>

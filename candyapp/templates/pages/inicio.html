@@ -14,14 +14,14 @@
 <div class="row">
 
 
-    {% for img in productos %}
+    {% for producto in productos %}
 
             <div class="col md-6 sm-12">
                 <div class="card m-4">
                     <div class="card-body">
-                        <h4 class="card-title">{{img.nombre}}</h4>
-                        <p class="card-text">{{img.descripcion}}</p>
-                        <a name="" id="" class="btn btn-info" href="{% url 'agregar_cr' lugar img.id_pd %}" role="button">Agregar</a>
+                        <h4 class="card-title">{{producto.nombre}}</h4>
+                        <p class="card-text">{{producto.descripcion}}</p>
+                        <a name="" id="" class="btn btn-info" href="{% url 'agregar_cr' lugar producto.id_pd %}" role="button">Agregar</a>
                     </div>
                 </div>
             </div>

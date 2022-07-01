@@ -593,22 +593,29 @@ def enviarp(request, nombrep, lg):
     if formulario.is_valid() and request.POST:
         for lug in lugares:
             if (lug.nombre).upper() == (formulario.data['lugar']).upper():
-                for mp in materiap:
-                    if (mp.nombre).upper() == (nombrep).upper():
-                        if mp.id_lg_id == lug.id_lg:
-                            mp.cantidad += int(formulario.data['cantidad'])
-                            pas = "si"
-                            mp.save()
-                        elif mp.id_lg_id == lg:
-                            mp.cantidad -= int(formulario.data['cantidad'])
-                            mp.save()
-                if pas == "no":
-                    for mp in materiap:
-                        if mp.id_lg_id == lg:
-                            data = {'nombre': mp.nombre, 'cantidad': int(formulario.data['cantidad']), 'unidad': mp.unidad, 'costo': mp.costo, 'costo_u': mp.costo_u, 'proveedor': mp.proveedor, 'contacto': mp.contacto, 'tiempo': mp.tiempo, 'mincant': mp.mincant, 'descripcion': mp.descripcion, 'estado': mp.estado, 'id_lg': lug}
-                            formulario = mpForm(data)
-                            if formulario.is_valid():
-                                formulario.save()
+                break
+        for mp in materiap:
+            print(mp.nombre)
+            if (mp.nombre).upper() == (nombrep).upper():
+                print("\n---------------------------------\n")
+                if mp.id_lg_id == lug.id_lg:
+                    print("entra aquui porque esta\n")
+                    mp.cantidad += int(formulario.data['cantidad'])
+                    pas = "si"
+                    mp.save()
+                elif mp.id_lg_id == lg:
+                    print("entra aqui para quitar\n")
+                    mp.cantidad -= int(formulario.data['cantidad'])
+                    mp.save()
+        if pas == "no":
+            for mp in materiap:
+                if mp.id_lg_id == lg and mp.nombre == nombrep:
+                    print("entra aqui para agregar--deberia entrar aqui\n")
+                    print(mp.nombre)
+                    data = {'nombre': mp.nombre, 'cantidad': int(formulario.data['cantidad']), 'unidad': mp.unidad, 'costo': mp.costo, 'costo_u': mp.costo_u, 'proveedor': mp.proveedor, 'contacto': mp.contacto, 'tiempo': mp.tiempo, 'mincant': mp.mincant, 'descripcion': mp.descripcion, 'estado': mp.estado, 'fecha': "  " + str(date.today()), 'id_lg': lug.id_lg}
+                    formulario = mpForm(data)
+                    formulario.save()
+                    break
         return redirect('/'+str(lg)+'/materiap')
     return render(request, "enviarp/enviar.html", {'formulario': formulario})
 
