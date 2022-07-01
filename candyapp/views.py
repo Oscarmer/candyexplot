@@ -43,7 +43,7 @@ def productos(request, lg):
             lista.append(pd)
         else:
             pass
-    return render(request, "productos/pindex.html", {'productos': lista, 'lugar': lg})
+    return render(request, "Productos/pindex.html", {'productos': lista, 'lugar': lg})
 
 def agregar_pd(request, lg):
     formulario = productoForm(request.POST or None, request.FILES or None)
