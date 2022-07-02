@@ -8,7 +8,7 @@
     <h1 class="card-title m-4">Adiciones para {{posicion.id_pd_id}}</h1>
     {% endif %}
     <div class="col col-lg-3">
-        <div class="card m-4">
+        <div class="card m-4 bg-warning border-dark">
             <div class="card-body">
                 <h4 class="card-title">{{posicion.nombre}}</h4>
                 <table class="table">
@@ -20,7 +20,7 @@
                             {% if materia.descripcion == posicion.id_ps %}   
                                 <td>{{materia.nombre}}</td>
                                 <td> 
-                                    <a name="" id="agregar" class="btn btn-success" href="{% url 'agregar_ar' lugar materia.id_ms materia.estado %}" role="button">+</a>
+                                    <a name="" id="agregar" class="btn btn-dark text-white" href="{% url 'agregar_ar' lugar materia.id_ms materia.estado %}" role="button">+</a>
                                 </td>
                             {% endif %}
                         </tr>
@@ -37,7 +37,7 @@
     </div>  
     {% endfor %}
     <div class="col-lg-6">
-        <div class="card m-4">
+        <div class="card m-4 bg-info border-dark">
             <div class="card-body">
                 <h4 class="card-title">Escogidos</h4>
                 <table class="table">
@@ -60,7 +60,7 @@
                 
             </div>
             <div class="card-footer"> precio: {{precio}} </div>
-            <a name="" id="" class="btn btn-info m-2" href="carrito" role="button">Armado</a>
+            <a name="" id="" class="btn btn-dark text-white m-2" href="carrito" role="button">Armado</a>
         </div>  
     </div>
 </div>    

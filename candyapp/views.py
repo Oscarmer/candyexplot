@@ -104,7 +104,7 @@ def agregar_mp(request, lg):
         if formulario.data['descripcion'] != '':
             descripcion = formulario.data['descripcion']
 
-        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': int(formulario.data['costo']), 'costo_u': int(formulario.data['costo'])//int(formulario.data['cantidad']), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
+        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': int(formulario.data['costo']), 'costo_u': int(formulario.data['costo'])/int(formulario.data['cantidad']), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
     
         formulario = mpForm(data)
         if formulario.is_valid():
