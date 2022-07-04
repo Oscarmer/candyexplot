@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v%10w=4%#gua)+h_oa2@vw_v%zfi917f_$0hfzxv01r2%%4^%4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'candyweb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd5q5crbqpobtpt',
-        'USER': 'tweewngxvtojwx',
-        'PASSWORD': '68631cd2ac12512aed7431a286ff9db4801b7c8abae4352af91ad76945f97189',
-        'HOST': 'ec2-44-198-82-71.compute-1.amazonaws.com',
+        'NAME': 'd7kkocbur0ilva',
+        'USER': 'cwozvmizcqwjns',
+        'PASSWORD': '6f06aa9d53beec885b9e47625124930ef2560733b1e8c8f686025df807699d91',
+        'HOST': 'ec2-54-159-22-90.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
