@@ -7,15 +7,6 @@ class lugar(models.Model):
     id_lg = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50, verbose_name="Lugar")
 
-class usuarios(models.Model):
-    id_us = models.IntegerField(primary_key=True, verbose_name="Identificacion")
-    nombre = models.CharField(max_length=50, verbose_name="Nombre")
-    apellido = models.CharField(max_length=50, verbose_name="Apellido")
-    ocupacion = models.CharField(max_length=20, verbose_name="Ocupacion")
-    usuario = models.CharField(default='id_us', max_length=20, verbose_name="Usuario")
-    contraseña = models.CharField(max_length=50, verbose_name="Contraseña")
-    lugar = models.CharField(max_length=20, verbose_name="Lugar")
-
 class producto(models.Model):
     id_pd = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, verbose_name="nombre")
@@ -104,12 +95,28 @@ class infofactura(models.Model):
 
 class finanza(models.Model):
     id_fz = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50, verbose_name="Nombre")
     fecha = models.CharField(max_length=50, verbose_name="Fecha")
-    descripcion = models.CharField(max_length=50, verbose_name="Descripcion")
+    id_lg = models.IntegerField(verbose_name="Lugar")
+    id_hs = models.IntegerField(verbose_name="Historial")
+    costot = models.IntegerField(verbose_name="Costo total", null=True)
+    
+class historial_fz(models.Model):
+    id_hf = models.AutoField(primary_key=True)
+    fecha = models.CharField(max_length=50, verbose_name="Fecha")
+    costot = models.FloatField(verbose_name="Costo total", null=True)
+    id_lg = models.IntegerField(verbose_name="Lugar")
 
 class historial_mp(models.Model):
     id_hp = models.AutoField(primary_key=True)
     cantidad = models.IntegerField(verbose_name="Cantidad")
     fecha = models.CharField(max_length=50, verbose_name="Fecha")
     materiap = models.CharField(max_length=50, verbose_name="Materia prima")
+
+class compt(models.Model):
+    id_cp = models.AutoField(primary_key=True)
+    servicio = models.CharField(max_length=50, verbose_name="Servicio")
+    costo = models.FloatField(verbose_name="Costo")
+    hora = models.CharField(max_length=50, verbose_name="Hora")
+    finz = models.IntegerField(verbose_name="Cantidad")
+    id_sv = models.IntegerField(verbose_name="Servicio")
+    id_lg = models.IntegerField(verbose_name="Lugar")

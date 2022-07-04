@@ -1,7 +1,7 @@
 from dataclasses import fields
+from sre_parse import State
 from django import forms
 from .models import *
-
 
 class snForm(forms.Form):
     name = forms.CharField(label="Nombre *")
@@ -17,11 +17,6 @@ class productoForm(forms.ModelForm):
         model=producto
         fields='__all__'
 
-class usuarioForm(forms.ModelForm):
-    class Meta:
-        model=usuarios
-        fields='__all__'
-
 class msForm(forms.ModelForm):
     class Meta:
         model=materia_s
@@ -35,6 +30,11 @@ class mpForm(forms.ModelForm):
     class Meta:
         model=materia_p
         fields='__all__'
+
+class edmpForm(forms.ModelForm):
+    class Meta:
+        model=materia_p
+        fields=['nombre', 'unidad', 'costo', 'costo_u', 'proveedor', 'contacto', 'tiempo', 'mincant', 'descripcion', 'estado', 'fecha']
 
 class dtMpForm(forms.Form):
     nombre = forms.CharField(label="Nombre *")
@@ -106,3 +106,15 @@ class inftForm(forms.ModelForm):
 class enviarForm(forms.Form):
     lugar = forms.CharField(label="Lugar *")
     cantidad = forms.IntegerField(label="Cantidad *")
+
+class avsForm(forms.Form):
+    cantidad = forms.IntegerField(label="Cantidad *")
+
+class fzForm(forms.ModelForm):
+    class Meta:
+        model=compt
+        fields='__all__'
+    
+class addfzForm(forms.Form):
+    servicio = forms.CharField(label="Nombre *")
+    costo = forms.FloatField(label="Costo *")

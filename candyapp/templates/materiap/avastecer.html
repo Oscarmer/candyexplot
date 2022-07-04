@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block titulo %} Productos {% endblock %}
+
+{% block contenido %} 
+
+<div class="container">
+    <div class="row">
+        <div class="col m-5">
+            <div class="card bg-warning border-dark">
+                <div class="card-header fw-bold">
+                    Avastecer {{nombre}}
+                </div>
+                <div class="card-body">
+            
+                  {% include 'form.html' %}  
+            
+                </div>
+                <div class="card-footer text-muted">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

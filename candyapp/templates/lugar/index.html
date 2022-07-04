@@ -28,7 +28,7 @@
  
                                     <a name="" id="" class="btn btn-dark text-white" href="{% url 'log' lugar.id_lg %}" role="button">Entrar</a>
                                     {% if lugar.id_lg != 1 %}
-                                    | <a name="" id="" class="btn btn-danger text-white" href="{% url 'eliminar_lg' lugar.id_lg %}" role="button">Borrar</a>
+                                    | <a name="" id="" class="btn btn-danger text-white" href="{% url 'alerta' lugar.nombre lugar.id_lg %}" role="button">Borrar</a>
                                     {% endif %}
                                 </div>
                             </div>

@@ -42,10 +42,11 @@
                     <td>{{materias.estado}}</td>
                     <td>{{materias.fecha}}</td>
                     <td> 
-                        <a name="" id="" class="btn btn-info" href="{% url 'editar_mp' lugar materias.id_mp %}" role="button">Editar</a> 
+                        <a name="" id="" class="btn btn-info text-white" href="{% url 'editar_mp' lugar materias.id_mp %}" role="button">Editar</a> 
                         |  <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_mp' lugar materias.id_mp %}" role="button">Borrar</a>
                         {% if lugar == 1 %}
-                        |  <a name="" id="" class="btn btn-warning" href="{% url 'enviarp' lugar materias.nombre %}" role="button">Enviar</a>
+                        |  <a name="" id="" class="btn btn-warning text-white mt-2 " href="{% url 'enviarp' lugar materias.nombre %}" role="button">Enviar</a>
+                        |  <a name="" id="" class="btn btn-primary mt-2" href="{% url 'avastecer' lugar materias.id_mp %}" role="button">Avastecer</a>
                         {% endif %}
                     </td>
 

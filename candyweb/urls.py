@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.signup, name="signup"),
     path('lugares', views.lugares, name="lugar"),
+    path('alertalg/<str:nombre>/<int:id>', views.alerta, name="alerta"),
     path('<int:id>', views.log, name="log"),
     path('agregarlg', views.agregar_lg, name="agregar_lg"),
     path('eliminarlg/<int:id>', views.eliminar_lg, name="eliminar_lg"),
@@ -38,6 +39,7 @@ urlpatterns = [
     path('<int:lg>/editproductos<int:id>', views.editar_pd, name="editar"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/materiap', views.materiap, name="materiap"),
+    path('<int:lg>/materiap<int:id>', views.avastecer, name="avastecer"),
     path('<int:lg>/addmateriap', views.agregar_mp, name="agregar_mp"),
     path('<int:lg>/editmateriap<int:id>', views.editar_mp, name="editar_mp"),
     path('<int:lg>/eliminarm/<int:id>', views.eliminar_mp, name="eliminar_mp"),
@@ -81,6 +83,12 @@ urlpatterns = [
 #------------------------------------------------------------------------------------------
     path('<int:lg>/admin', views.admins, name="admin"),
 #-------------------------------------------------------------------------------------------
-    path('<int:lg>/enviar/<str:nombrep>', views.enviarp, name="enviarp")
+    path('<int:lg>/enviar/<str:nombrep>', views.enviarp, name="enviarp"),
+#---------------------------------------------------------------------------------------------
+    path('<int:lg>/finanzas', views.verfinanza, name="finanzas"),
+    path('<int:lg>/addfinanzas', views.add_finz, name="addfinanzas"),
+    path('<int:lg>/historiafz', views.gen_fz, name="hfz"),
+    path('<int:lg>/verfz<int:id>', views.hist_fz, name="verfz"),
+    path('<int:lg>/masinfofz<int:id>', views.info_fz, name="infz")
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

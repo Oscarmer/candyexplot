@@ -4,6 +4,77 @@ from .forms import *
 from datetime import datetime, date
 # Create your views here.
 
+def add_finz(request, lg):
+    id = gen_add(lg)
+    finanza.objects.get_or_create(fecha=datetime.now().strftime("%x"), id_lg=lg, id_hs=id)
+    finanzas = finanza.objects.get(fecha=datetime.now().strftime("%x"), id_lg=lg) 
+    formulario = addfzForm(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        data = {'servicio': "servicio: "+str(formulario.data['servicio']), 'costo': 0-int(formulario.data['costo']), 'hora': datetime.now().strftime("%X"), 'finz':finanzas.id_fz,'id_sv': -2,'id_lg': lg}
+        formulario = fzForm(data)
+        if formulario.is_valid():
+            formulario.save()
+        return redirect('/'+str(lg)+'/'+'finanzas')
+    return render(request, "finanza/addfz.html", {'formulario': formulario})
+
+def verfinanza(request, lg):
+    return render(request, "finanza/vista.html")
+
+def gen_add(lg):
+    historial_fz.objects.get_or_create(fecha=datetime.now().strftime("%m")+"/"+datetime.now().strftime("%y"), id_lg=lg)
+    historial = historial_fz.objects.get(fecha=datetime.now().strftime("%m")+"/"+datetime.now().strftime("%y"), id_lg=lg)
+    return historial.id_hf
+
+def gen_fz(request, lg):
+    historial = historial_fz.objects.all()
+    info = finanza.objects.all()
+    costo = 0.0
+    filtro = []
+    for hs in historial:
+        if hs.id_lg == lg:
+            for ifo in info:
+                if ifo.id_hs == hs.id_hf:
+                    if ifo.costot != None:
+                        costo += int(ifo.costot)
+            hs.costot = costo
+            filtro.append(hs)
+            costo = 0
+    return render(request, "finanza/gen.html", {'historiales': filtro, 'lugar': lg })
+
+def info_fz(request, id, lg):
+    histo = compt.objects.all()
+    info = []
+    for hs in histo:
+        if hs.id_lg == lg:
+            if hs.finz == id:
+                info.append(hs)
+    return render(request, "finanza/masinfo.html", {'infos': info})
+
+def hist_fz(request, lg, id):
+    historial = finanza.objects.all()
+    info = compt.objects.all()
+    costo = 0
+    filtro = []
+    for hs in historial:
+        if hs.id_lg == lg and hs.id_hs == id:
+            for ifo in info:
+                if ifo.finz == hs.id_fz:
+                    costo += ifo.costo
+            hs.costot = costo
+            hs.save()
+            filtro.append(hs)
+            costo = 0
+    return render(request, "finanza/index.html", {'historiales': filtro, 'lugar': lg })
+    
+def finanzas(serv ,servicio, costo, link, lg):
+    id = gen_add(lg)
+    finanza.objects.get_or_create(fecha=datetime.now().strftime("%x"), id_lg=lg, id_hs=id)
+    finanzas = finanza.objects.get(fecha=datetime.now().strftime("%x"), id_lg=lg) 
+    data = {'servicio': servicio, 'costo':costo, 'hora': datetime.now().strftime("%X"), 'finz':finanzas.id_fz,'id_sv': serv,'id_lg': lg}
+    formulario = fzForm(data)
+    formulario.save()
+    return redirect('/' + str(lg) + link)
+
 def signup(request):
     formulario = snForm(request.POST or None, request.FILES or None)
     if formulario.is_valid():
@@ -50,8 +121,6 @@ def productos(request, lg):
     for pd in productos:
         if pd.id_lg_id == lg:
             lista.append(pd)
-        else:
-            pass
     return render(request, "Productos/pindex.html", {'productos': lista, 'lugar': lg})
 
 def agregar_pd(request, lg):
@@ -84,6 +153,17 @@ def materiap(request, lg):
             lista.append(mp)
     return render(request, "materiap/index.html", {'materiap': lista, 'lugar': lg})
 
+def avastecer(request, id, lg):
+    materia = materia_p.objects.get(id_mp=id)
+    formulario = avsForm(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        finanzas(materia.id_mp ,"Avastecido "+ str(formulario.data['cantidad'])+" :" + materia.nombre , 0-(float(formulario.data['cantidad']) * materia.costo_u), "/materiap", lg)
+        materia.cantidad += int(formulario.data['cantidad'] )
+        materia.save()
+        return redirect('/' + str(lg) + '/materiap')
+    return render(request, "materiap/avastecer.html", {'formulario': formulario, 'nombre':materia.nombre})
+
+
 def agregar_mp(request, lg):
     formulario = dtMpForm(request.POST or None, request.FILES or None)
     fecha = datetime.now()
@@ -104,19 +184,21 @@ def agregar_mp(request, lg):
         if formulario.data['descripcion'] != '':
             descripcion = formulario.data['descripcion']
 
-        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': int(formulario.data['costo']), 'costo_u': int(formulario.data['costo'])/int(formulario.data['cantidad']), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
-    
+        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': int(formulario.data['costo']), 'costo_u': float("{0:.2f}".format(int(formulario.data['costo'])/int(formulario.data['cantidad']))), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
+        costo = int(formulario.data['costo'])
+        nom = formulario.data['nombre']
         formulario = mpForm(data)
         if formulario.is_valid():
-            print("si")
             formulario.save()
+            materiap = materia_p.objects.get(nombre=nom, id_lg=lg)
+            finanzas(materiap.id_mp ,"Materia prima: "+ nom , 0-costo, "/materiap", lg)
         return redirect('/' + str(lg) + '/materiap')
     return render(request, "materiap/crear.html", {'formulario': formulario})
 
 def editar_mp(request, id, lg):
     materiap = materia_p.objects.get(id_mp=id)
     mezclas = mezcla.objects.all()
-    formulario = mpForm(request.POST or None, request.FILES or None, instance=materiap)
+    formulario = edmpForm(request.POST or None, request.FILES or None, instance=materiap)
     if formulario.is_valid() and request.POST:
         formulario.save()
         for mz in mezclas:
@@ -131,6 +213,10 @@ def editar_mp(request, id, lg):
 
 def eliminar_mp(request, id, lg):
     materia = materia_p.objects.get(id_mp=id)
+    finanzas = compt.objects.all()
+    for fz in finanzas:
+        if fz.id_sv == id:
+            fz.delete()
     materia.delete()
     return redirect('/' + str(lg) + '/materiap')
 
@@ -424,8 +510,6 @@ def agregar_ar(request, id, id2, lg):
     return render(request, "armado/crear.html", {'formulario': formulario})
 
 def eliminar_ar(request, id, id2, lg):
-    print(id)
-    print(id2)
     armados = armado.objects.get(id_ar=id)
     armados.delete()
     return redirect("/"+str(lg)+"/armado"+ str(id2))
@@ -495,12 +579,14 @@ def agregar_en(request, lg):
             pres.clear()
             for prod in productos:
                 if prod.id_pd == car.id_pd_id:
+                    preciof += prod.precio
                     if arm == " ":
                         arm = "Sin adiciones"
                     else:
                         dis = len(arm)
                         arm = arm[:dis-2]
                     data = {'mesa': formulario.data['mesa'], 'cliente': formulario.data['cliente'], 'id_cr': prod.nombre, 'descripcion': arm, 'precio': precio, 'preciot': preciof, 'id_lg': lg} 
+                    finanzas(-1 ,"Venta: "+ prod.nombre, preciof, "/entregado", lg)
                     form = enForm(data)
                     arm = " "
                     precio = 0
@@ -580,7 +666,7 @@ def agregar_inft(mesa, lg):
     for en in entregados:
         if en.mesa == mesa:
             fecha = datetime.now()
-            data = {'precio': en.precio, 'entregado': en.id_eg, 'producto': en.id_cr, 'adiciones': en.descripcion, 'fecha': "  " + str(date.today()) + "  |  " + str(fecha.strftime("%X")), 'id_ft': id, 'lugar': lugars}
+            data = {'precio': en.preciot, 'entregado': en.id_eg, 'producto': en.id_cr, 'adiciones': en.descripcion, 'fecha': "  " + str(date.today()) + "  |  " + str(fecha.strftime("%X")), 'id_ft': id, 'lugar': lugars}
             formulario = inftForm(data)
             if formulario.is_valid():
                 formulario.save() 
@@ -606,23 +692,17 @@ def enviarp(request, nombrep, lg):
             if (lug.nombre).upper() == (formulario.data['lugar']).upper():
                 break
         for mp in materiap:
-            print(mp.nombre)
             if (mp.nombre).upper() == (nombrep).upper():
-                print("\n---------------------------------\n")
                 if mp.id_lg_id == lug.id_lg:
-                    print("entra aquui porque esta\n")
                     mp.cantidad += int(formulario.data['cantidad'])
                     pas = "si"
                     mp.save()
                 elif mp.id_lg_id == lg:
-                    print("entra aqui para quitar\n")
                     mp.cantidad -= int(formulario.data['cantidad'])
                     mp.save()
         if pas == "no":
             for mp in materiap:
                 if mp.id_lg_id == lg and mp.nombre == nombrep:
-                    print("entra aqui para agregar--deberia entrar aqui\n")
-                    print(mp.nombre)
                     data = {'nombre': mp.nombre, 'cantidad': int(formulario.data['cantidad']), 'unidad': mp.unidad, 'costo': mp.costo, 'costo_u': mp.costo_u, 'proveedor': mp.proveedor, 'contacto': mp.contacto, 'tiempo': mp.tiempo, 'mincant': mp.mincant, 'descripcion': mp.descripcion, 'estado': mp.estado, 'fecha': "  " + str(date.today()), 'id_lg': lug.id_lg}
                     formulario = mpForm(data)
                     formulario.save()
@@ -630,4 +710,5 @@ def enviarp(request, nombrep, lg):
         return redirect('/'+str(lg)+'/materiap')
     return render(request, "enviarp/enviar.html", {'formulario': formulario})
 
-
+def alerta(request, nombre, id):
+    return render(request, "alerta/index.html",{'nombre':nombre, 'id':id})
