@@ -11,7 +11,7 @@ class producto(models.Model):
     id_pd = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, verbose_name="nombre")
     descripcion = models.TextField(max_length=100, null=True, verbose_name="descripcion")
-    precio = models.IntegerField(verbose_name="Precio base")
+    precio = models.FloatField(verbose_name="Precio base")
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
 
 class materia_s(models.Model):
@@ -42,12 +42,12 @@ class mezcla(models.Model):
     id_ms = models.ForeignKey(materia_s, verbose_name="materia secundaria", on_delete=models.CASCADE)
     id_mp = models.ForeignKey(materia_p, verbose_name="materia primaria", on_delete=models.CASCADE)
     cantidad = models.IntegerField(verbose_name="cantidad")
-    costo=models.IntegerField(verbose_name="costo")
+    costo = models.FloatField(verbose_name="costo")
 
 class posicion(models.Model):
     id_ps = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, verbose_name="nombre")
-    precio = models.IntegerField(verbose_name="precio")
+    precio = models.FloatField(verbose_name="precio")
     id_pd = models.ForeignKey(producto, verbose_name="producto", on_delete=models.CASCADE)
 
 class menu(models.Model):
@@ -63,7 +63,7 @@ class candycarrito(models.Model):
     id_cr = models.AutoField(primary_key=True)
     id_pd = models.ForeignKey(producto, verbose_name="producto", on_delete=models.CASCADE)
     nombre_pd = models.CharField(max_length=20, null=True)
-    precio = models.IntegerField(verbose_name="precio", null=True)
+    precio = models.FloatField(verbose_name="precio", null=True)
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
 
 class armado(models.Model):
@@ -71,7 +71,7 @@ class armado(models.Model):
     id_cr = models.ForeignKey(candycarrito, verbose_name="carrito", on_delete=models.CASCADE)
     id_mn = models.ForeignKey(menu, verbose_name="menu", on_delete=models.CASCADE)
     nombre_ms = models.CharField(max_length=20, null=True)
-    precio = models.IntegerField(null=True)
+    precio = models.FloatField(null=True)
                
 class entregado(models.Model):
     id_eg = models.AutoField(primary_key=True) 
@@ -79,13 +79,13 @@ class entregado(models.Model):
     cliente = models.CharField(max_length=50, null=True)   
     id_cr = models.CharField(max_length=50, verbose_name="carrito")
     descripcion = models.CharField(max_length=100, null=True)
-    precio = models.IntegerField(null=True)
-    preciot = models.IntegerField(null=True)
+    precio = models.FloatField(null=True)
+    preciot = models.FloatField(null=True)
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
 
 class infofactura(models.Model):
     id_if = models.AutoField(primary_key=True)
-    precio = models.IntegerField(verbose_name="Precio")
+    precio = models.FloatField(verbose_name="Precio")
     entregado = models.IntegerField(verbose_name="Valor entregado")
     producto = models.CharField(max_length=50, verbose_name="Producto")
     adiciones = models.CharField(max_length=50, verbose_name="Adiciones")
@@ -98,7 +98,7 @@ class finanza(models.Model):
     fecha = models.CharField(max_length=50, verbose_name="Fecha")
     id_lg = models.IntegerField(verbose_name="Lugar")
     id_hs = models.IntegerField(verbose_name="Historial")
-    costot = models.IntegerField(verbose_name="Costo total", null=True)
+    costot = models.FloatField(verbose_name="Costo total", null=True)
     
 class historial_fz(models.Model):
     id_hf = models.AutoField(primary_key=True)

@@ -184,7 +184,7 @@ def agregar_mp(request, lg):
         if formulario.data['descripcion'] != '':
             descripcion = formulario.data['descripcion']
 
-        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': int(formulario.data['costo']), 'costo_u': float("{0:.2f}".format(int(formulario.data['costo'])/int(formulario.data['cantidad']))), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
+        data = {'nombre': formulario.data['nombre'], 'cantidad': int(formulario.data['cantidad']), 'unidad': formulario.data['unidad'], 'costo': float("{0:.2f}".format(int(formulario.data['costo']))), 'costo_u': float("{0:.2f}".format(int(formulario.data['costo'])/int(formulario.data['cantidad']))), 'proveedor': formulario.data['proveedor'], 'contacto': contacto, 'tiempo': tiempo, 'mincant': int(mincant), 'descripcion': descripcion, 'estado': 'Activo','fecha': str(fecha.strftime("%B")) + "/" + str(fecha.strftime("%Y")) , 'id_lg': lg}
         costo = int(formulario.data['costo'])
         nom = formulario.data['nombre']
         formulario = mpForm(data)
@@ -684,6 +684,7 @@ def admins(request, lg):
 
 def enviarp(request, nombrep, lg):
     lugares = lugar.objects.all()
+    finanzasi = compt.objects.all()
     materiap = materia_p.objects.all()
     formulario = enviarForm(request.POST or None, request.FILES or None)
     pas = "no"
@@ -695,18 +696,26 @@ def enviarp(request, nombrep, lg):
             if (mp.nombre).upper() == (nombrep).upper():
                 if mp.id_lg_id == lug.id_lg:
                     mp.cantidad += int(formulario.data['cantidad'])
+                    mp.costo += mp.costo_u * int(formulario.data['cantidad'])
                     pas = "si"
                     mp.save()
+                    finanzas(mp.id_mp ,"Avastecido: "+ mp.nombre , 0-mp.costo_u * int(formulario.data['cantidad']), "/materiap", lug.id_lg)
                 elif mp.id_lg_id == lg:
                     mp.cantidad -= int(formulario.data['cantidad'])
+                    mp.costo -= mp.costo_u*int(formulario.data['cantidad'])
                     mp.save()
+                    for fz in finanzasi:
+                        if fz.id_sv == mp.id_mp:
+                            fz.costo += mp.costo_u*int(formulario.data['cantidad'])
+                            fz.save()
         if pas == "no":
             for mp in materiap:
                 if mp.id_lg_id == lg and mp.nombre == nombrep:
-                    data = {'nombre': mp.nombre, 'cantidad': int(formulario.data['cantidad']), 'unidad': mp.unidad, 'costo': mp.costo, 'costo_u': mp.costo_u, 'proveedor': mp.proveedor, 'contacto': mp.contacto, 'tiempo': mp.tiempo, 'mincant': mp.mincant, 'descripcion': mp.descripcion, 'estado': mp.estado, 'fecha': "  " + str(date.today()), 'id_lg': lug.id_lg}
+                    data = {'nombre': mp.nombre, 'cantidad': int(formulario.data['cantidad']), 'unidad': mp.unidad, 'costo': float("{0:.2f}".format(mp.costo_u*int(formulario.data['cantidad']))), 'costo_u': mp.costo_u, 'proveedor': mp.proveedor, 'contacto': mp.contacto, 'tiempo': mp.tiempo, 'mincant': mp.mincant, 'descripcion': mp.descripcion, 'estado': mp.estado, 'fecha': "  " + str(date.today()), 'id_lg': lug.id_lg}
                     formulario = mpForm(data)
                     formulario.save()
-                    break
+                    materiap2 = materia_p.objects.get(nombre=mp.nombre, id_lg=lug.id_lg)
+                    finanzas(materiap2.id_mp ,"Materia prima: "+ materiap2.nombre , 0-materiap2.costo, "/materiap", lug.id_lg)
         return redirect('/'+str(lg)+'/materiap')
     return render(request, "enviarp/enviar.html", {'formulario': formulario})
 
