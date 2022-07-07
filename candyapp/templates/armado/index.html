@@ -20,7 +20,7 @@
                             {% if materia.descripcion == posicion.id_ps %}   
                                 <td>{{materia.nombre}}</td>
                                 <td> 
-                                    <a name="" id="agregar" class="btn btn-dark text-white" href="{% url 'agregar_ar' lugar materia.id_ms materia.estado %}" role="button">+</a>
+                                    <a name="" id="agregar" class="btn btn-dark text-white" href="{% url 'agregar_ar' lugar materia.id_ms materia.tiempo materia.estado %}" role="button">+</a>
                                 </td>
                             {% endif %}
                         </tr>

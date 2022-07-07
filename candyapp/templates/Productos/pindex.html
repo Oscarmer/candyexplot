@@ -17,7 +17,6 @@
                             <th>Nombre</th>
                             <th>Precio base</th>
                             <th>Descripcion</th>
-                            <th>Lugar</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -28,7 +27,6 @@
                             <td>{{producto.nombre}}</td>
                             <td>{{producto.precio}}</td>
                             <td>{{producto.descripcion}}</td>
-                            <td>{{producto.id_lg_id}}</td>
                             <td> 
                                 <a name="" id="" class="btn btn-info" href="{% url 'editar' lugar producto.id_pd %}" role="button">Editar</a> 
                                 |  <a name="" id="" class="btn btn-danger" href="{% url 'eliminar' lugar producto.id_pd %}" role="button">Borrar</a>

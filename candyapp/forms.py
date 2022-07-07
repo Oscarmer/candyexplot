@@ -17,6 +17,11 @@ class productoForm(forms.ModelForm):
         model=producto
         fields='__all__'
 
+class infPdForm(forms.Form):
+    nombre = forms.CharField(label="Nombre *")
+    precio = forms.FloatField(label="Precio base *")
+    descripcion = forms.CharField(label="Descripcion", required=False)
+
 class msForm(forms.ModelForm):
     class Meta:
         model=materia_s
@@ -118,3 +123,5 @@ class fzForm(forms.ModelForm):
 class addfzForm(forms.Form):
     servicio = forms.CharField(label="Nombre *")
     costo = forms.FloatField(label="Costo *")
+
+

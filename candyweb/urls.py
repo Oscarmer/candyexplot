@@ -34,7 +34,6 @@ urlpatterns = [
 #-------------------------------------------------------------------------------------------    
     path('<int:lg>/productos', views.productos, name="productos"),
     path('<int:lg>/addproductos', views.agregar_pd, name="agregar"),
-    #path('productos/editar', views.editar_pd, name="editar"),
     path('<int:lg>/eliminar/<int:id>', views.eliminar_pd, name="eliminar"),
     path('<int:lg>/editproductos<int:id>', views.editar_pd, name="editar"),
 #-------------------------------------------------------------------------------------------
@@ -51,12 +50,12 @@ urlpatterns = [
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/mezcla<int:id>', views.mezclas, name="mezclas"),
     path('<int:lg>/addmix<int:id>', views.agregar_mz, name="agregar_mz"),
-    path('<int:lg>/editmix<int:id><int:id2>', views.editar_mz, name="editar_mz"),
+    path('<int:lg>/editmix<int:id>/<int:id2>', views.editar_mz, name="editar_mz"),
     path('<int:lg>/eliminarmix/<int:id>/<int:id2>', views.eliminar_mz, name="eliminar_mz"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/posicion<int:id>', views.posiciones, name="posiciones"),
     path('<int:lg>/addpos<int:id>', views.agregar_ps, name="agregar_ps"),
-    path('<int:lg>/editpos<int:id><int:id2>', views.editar_ps, name="editar_ps"),
+    path('<int:lg>/editpos<int:id>/<int:id2>', views.editar_ps, name="editar_ps"),
     path('<int:lg>/eliminarpos/<int:id>/<int:id2>', views.eliminar_ps, name="eliminar_ps"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/menu<int:id>', views.menus, name="menus"),
@@ -69,7 +68,7 @@ urlpatterns = [
     path('<int:lg>/eliminarcr/<int:id>', views.eliminar_cr, name="eliminar_cr"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/armado<int:id>', views.armados, name="armado"),
-    path('<int:lg>/addarm<int:id><int:id2>', views.agregar_ar, name="agregar_ar"),
+    path('<int:lg>/addarm<int:id>/<int:id2>/<str:active>', views.agregar_ar, name="agregar_ar"),
     path('<int:lg>/eliminarar<int:id>/<int:id2>', views.eliminar_ar, name="eliminar_ar"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/entregado', views.entregados, name="entregado"),

@@ -26,6 +26,7 @@ def gen_add(lg):
     return historial.id_hf
 
 def gen_fz(request, lg):
+    veract(lg)
     historial = historial_fz.objects.all()
     info = finanza.objects.all()
     costo = 0.0
@@ -49,6 +50,20 @@ def info_fz(request, id, lg):
             if hs.finz == id:
                 info.append(hs)
     return render(request, "finanza/masinfo.html", {'infos': info})
+
+def veract(lg):
+    historial = finanza.objects.all()
+    info = compt.objects.all()
+    costo = 0
+    for hs in historial:
+        if hs.id_lg == lg:
+            for ifo in info:
+                if ifo.finz == hs.id_fz:
+                    costo += ifo.costo
+            hs.costot = costo
+            hs.save()
+            costo = 0
+
 
 def hist_fz(request, lg, id):
     historial = finanza.objects.all()
@@ -124,8 +139,13 @@ def productos(request, lg):
     return render(request, "Productos/pindex.html", {'productos': lista, 'lugar': lg})
 
 def agregar_pd(request, lg):
-    formulario = productoForm(request.POST or None, request.FILES or None)
+    formulario = infPdForm(request.POST or None, request.FILES or None)
+    descripcion = "None"
     if formulario.is_valid():
+        if formulario.data['descripcion'] != "":
+            descripcion = formulario.data['descripcion']
+        data = {'nombre':formulario.data['nombre'], 'descripcion': descripcion, 'precio': formulario.data['precio'], 'id_lg': lg}
+        formulario = productoForm(data)
         formulario.save()
         return redirect('/'+str(lg)+'/'+'productos')
     return render(request, "Productos/crear.html", {'formulario': formulario})
@@ -146,6 +166,7 @@ def eliminar_pd(request, id, lg):
 #------------------------------materia_p-------------------------------------------------
 
 def materiap(request, lg):
+    isactive()
     materiap = materia_p.objects.all()
     lista = []
     for mp in materiap:
@@ -157,8 +178,9 @@ def avastecer(request, id, lg):
     materia = materia_p.objects.get(id_mp=id)
     formulario = avsForm(request.POST or None, request.FILES or None)
     if formulario.is_valid():
-        finanzas(materia.id_mp ,"Avastecido "+ str(formulario.data['cantidad'])+" :" + materia.nombre , 0-(float(formulario.data['cantidad']) * materia.costo_u), "/materiap", lg)
+        finanzas(materia.id_mp ,"Avastecido "+ str(formulario.data['cantidad'])+": " + materia.nombre , 0-(float(formulario.data['cantidad']) * materia.costo_u), "/materiap", lg)
         materia.cantidad += int(formulario.data['cantidad'] )
+        materia.costo += int(formulario.data['cantidad'] ) * materia.costo_u
         materia.save()
         return redirect('/' + str(lg) + '/materiap')
     return render(request, "materiap/avastecer.html", {'formulario': formulario, 'nombre':materia.nombre})
@@ -223,6 +245,7 @@ def eliminar_mp(request, id, lg):
 #------------------------------materia_s-------------------------------------------------
 
 def materias(request, lg):
+    isactive()
     materias = materia_s.objects.all()
     lista = []
     for ms in materias:
@@ -258,10 +281,25 @@ def eliminar_ms(request, id, lg):
 
 #------------------------------mezcla-------------------------------------------------
 
+def isactive(): 
+    mezclas = mezcla.objects.all()
+    estado = "Activo"
+    for i in mezclas:
+        materiap = materia_p.objects.get(id_mp=i.id_mp_id)
+        materias = materia_s.objects.get(id_ms=i.id_ms_id)
+        if i.cantidad > materiap.cantidad:
+            estado = "Inactivo"
+        materiap.estado = estado
+        materias.estado = estado
+        materiap.save()
+        materias.save()
+
+
 def mezclas(request, id, lg):
     mezclas = mezcla.objects.all()
     materiap = materia_p.objects.all()
     materias = materia_s.objects.get(id_ms=id)
+    estado = "Activo"
     ingredientes = []
     prm = []
     filtro = []
@@ -271,10 +309,11 @@ def mezclas(request, id, lg):
             for j in materiap:
                 if j.id_mp == i.id_mp_id:
                     if i.cantidad > j.cantidad:
-                        j.estado = "Inactivo"
-                    else:
-                        j.estado = "Activo"
+                        estado = "Inactivo"
+                    j.estado = estado
+                    materias.estado = estado
                     j.save()
+                    materias.save()
                     prm.append(j)
     for a, b in zip(prm, filtro):
         b.id_us_id = id
@@ -487,7 +526,7 @@ def armados(request, id, lg):
                     if ms.id_ms == mn.id_ms_id:
                         ms.id_ms = id
                         ms.descripcion = fl.id_ps
-                        ms.estado = mn.id_mn
+                        ms.tiempo = mn.id_mn
                         mats.append(ms)
                         for ar in armados:
                             if ar.id_cr_id == carritos.id_cr:
@@ -501,13 +540,16 @@ def armados(request, id, lg):
         precio = 0                    
     return render(request, "armado/index.html", {'posiciones': filtro, 'materias': mats, 'armados': arm, 'precio': precio, 'lugar': lg})
 
-def agregar_ar(request, id, id2, lg):
-    data = {'id_cr': id, 'id_mn': id2, 'nombre_ms': 'null', 'precio': 0}
-    formulario = arForm(data)
-    if formulario.is_valid():
-        formulario.save()
-        return redirect("/"+str(lg)+"/armado"+ str(id))
-    return render(request, "armado/crear.html", {'formulario': formulario})
+def agregar_ar(request, id, id2, lg, active):
+    if active == "Inactivo":
+        return render(request, "alerta/falta.html", {'lugar': lg, 'id':id})
+    else:
+        data = {'id_cr': id, 'id_mn': id2, 'nombre_ms': 'null', 'precio': 0}
+        formulario = arForm(data)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect("/"+str(lg)+"/armado"+ str(id))
+        return render(request, "armado/crear.html", {'formulario': formulario})
 
 def eliminar_ar(request, id, id2, lg):
     armados = armado.objects.get(id_ar=id)
@@ -522,18 +564,30 @@ def entregados(request, lg):
     for et in entregados:
         if et.id_lg_id == lg:
             filtro.append(et)
+    precio = 0
+    clientes = []
+    precios = []
     rep = []
     mesas = []
     for en in filtro:
         if en.mesa not in rep:
+            precio = en.precio
+            clientes.append(en.cliente)
+            precios.append(precio)
             rep.append(en.mesa)
-            mesas.append([en.mesa, "|  Precio: "+ str(en.preciot), " |  Cliente: " + str(en.cliente)])
         else:
             lugar = rep.index(en.mesa)
+            precio = en.precio + precios[lugar]
+            precios.pop(lugar)
             rep.pop(lugar)
+            clientes.pop(lugar)
             rep.append(en.mesa)
-            mesas.pop(lugar)
-            mesas.append([en.mesa, "|  Precio: "+ str(en.preciot), " |  Cliente: " + str(en.cliente)])
+            clientes.append(en.cliente)
+            precios.append(precio)
+    i = 0
+    for ms in rep:
+        mesas.append([ms, "|  Precio: "+ str(precios[i]), " |  Cliente: " + clientes[i]])
+        i+=1
     return render(request, "entregado/index.html", {'entregados': entregados, 'mesas': mesas, 'lugar': lg})
 
 def agregar_en(request, lg):
@@ -579,6 +633,7 @@ def agregar_en(request, lg):
             pres.clear()
             for prod in productos:
                 if prod.id_pd == car.id_pd_id:
+                    precio += prod.precio
                     preciof += prod.precio
                     if arm == " ":
                         arm = "Sin adiciones"
@@ -633,7 +688,7 @@ def infactura(request, lg):
         else:
             lugars=tablas.index(ft.id_ft)
             titulos[lugars][1].append(ft.producto)
-            titulos[lugars][2] += ft.precio
+            titulos[lugars][2] = ft.precio
         
     return render(request, "infofactura/index.html", {'informaciones': filtro, 'titulos': titulos, 'lugar': lg, 'nombre': maps})
 
@@ -666,7 +721,7 @@ def agregar_inft(mesa, lg):
     for en in entregados:
         if en.mesa == mesa:
             fecha = datetime.now()
-            data = {'precio': en.preciot, 'entregado': en.id_eg, 'producto': en.id_cr, 'adiciones': en.descripcion, 'fecha': "  " + str(date.today()) + "  |  " + str(fecha.strftime("%X")), 'id_ft': id, 'lugar': lugars}
+            data = {'precio': en.precio, 'entregado': en.id_eg, 'producto': en.id_cr, 'adiciones': en.descripcion, 'fecha': "  " + str(date.today()) + "  |  " + str(fecha.strftime("%X")), 'id_ft': id, 'lugar': lugars}
             formulario = inftForm(data)
             if formulario.is_valid():
                 formulario.save() 
@@ -699,15 +754,23 @@ def enviarp(request, nombrep, lg):
                     mp.costo += mp.costo_u * int(formulario.data['cantidad'])
                     pas = "si"
                     mp.save()
-                    finanzas(mp.id_mp ,"Avastecido: "+ mp.nombre , 0-mp.costo_u * int(formulario.data['cantidad']), "/materiap", lug.id_lg)
+                    finanzas(mp.id_mp ,"Avastecido "+ str(formulario.data['cantidad'])+": "+ mp.nombre , 0-mp.costo_u * int(formulario.data['cantidad']), "/materiap", lug.id_lg)
                 elif mp.id_lg_id == lg:
                     mp.cantidad -= int(formulario.data['cantidad'])
                     mp.costo -= mp.costo_u*int(formulario.data['cantidad'])
                     mp.save()
+                    resta = mp.costo_u*int(formulario.data['cantidad'])
+                    print("pr1: ",resta)
                     for fz in finanzasi:
                         if fz.id_sv == mp.id_mp:
-                            fz.costo += mp.costo_u*int(formulario.data['cantidad'])
-                            fz.save()
+                            if fz.costo > 0-(resta):
+                                resta += fz.costo
+                                fz.costo = 0
+                                fz.save()
+                            else:
+                                fz.costo += resta
+                                fz.save()
+                                resta = 0
         if pas == "no":
             for mp in materiap:
                 if mp.id_lg_id == lg and mp.nombre == nombrep:
