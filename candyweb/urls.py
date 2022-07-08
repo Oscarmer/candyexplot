@@ -37,6 +37,10 @@ urlpatterns = [
     path('<int:lg>/eliminar/<int:id>', views.eliminar_pd, name="eliminar"),
     path('<int:lg>/editproductos<int:id>', views.editar_pd, name="editar"),
 #-------------------------------------------------------------------------------------------
+    path('<int:lg>/base<int:id>', views.baseprod, name="basepd"),
+    path('<int:lg>/addbase<int:id>', views.addbase, name="addbasepd"),
+    path('<int:lg>/delbase/<int:id>/<int:id2>', views.delbase, name="delbasepd"),
+#-------------------------------------------------------------------------------------------
     path('<int:lg>/materiap', views.materiap, name="materiap"),
     path('<int:lg>/materiap<int:id>', views.avastecer, name="avastecer"),
     path('<int:lg>/addmateriap', views.agregar_mp, name="agregar_mp"),
@@ -65,15 +69,15 @@ urlpatterns = [
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/carrito', views.carritos, name="carritos"),
     path('<int:lg>/addcar<int:id>', views.agregar_cr, name="agregar_cr"),
-    path('<int:lg>/eliminarcr/<int:id>', views.eliminar_cr, name="eliminar_cr"),
+    path('<int:lg>/eliminarcr/<int:id>/<int:id2>', views.eliminar_cr, name="eliminar_cr"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/armado<int:id>', views.armados, name="armado"),
-    path('<int:lg>/addarm<int:id>/<int:id2>/<str:active>', views.agregar_ar, name="agregar_ar"),
-    path('<int:lg>/eliminarar<int:id>/<int:id2>', views.eliminar_ar, name="eliminar_ar"),
+    path('<int:lg>/addarm<int:id>/<int:id2>/<int:ms>', views.agregar_ar, name="agregar_ar"),
+    path('<int:lg>/eliminarar<int:id>/<int:id2>/<int:mn>', views.eliminar_ar, name="eliminar_ar"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/entregado', views.entregados, name="entregado"),
     path('<int:lg>/addent', views.agregar_en, name="agregar_en"),
-    path('<int:lg>/eliminarar/<int:id>', views.eliminar_en, name="eliminar_en"),
+    path('<int:lg>/eliminaren/<int:id>', views.eliminar_en, name="eliminar_en"),
 #-------------------------------------------------------------------------------------------
     path('<int:lg>/factura/<str:mesa>', views.agregar_ft, name="factura"),
 #-------------------------------------------------------------------------------------------

@@ -4,6 +4,67 @@ from .forms import *
 from datetime import datetime, date
 # Create your views here.
 
+def baseprod(request, lg, id):
+    pd = producto.objects.get(id_pd=id)
+    bases = basepd.objects.all()
+    materiap = materia_p.objects.all()
+    filtro = []
+    for bs in bases:
+        if bs.id_pd_id == id:
+            for ms in materiap:
+                if ms.id_mp == bs.id_mp_id:
+                    ms.cantidad = bs.cantidad
+                    ms.descripcion = bs.id_bp
+                    filtro.append(ms)
+    return render(request, "basepd/index.html", {'bases': filtro, 'nombre': pd.nombre, 'id': id, 'lg': lg})
+
+def addbase(request, lg, id):
+    materiap = materia_p.objects.all()
+    formulario = infBaseForm(request.POST or None, request.FILES or None)
+    if formulario.is_valid():
+        for ms in materiap:
+            print((ms.nombre).upper())
+            print((formulario.data['materias']).upper())
+            print(formulario.data['cantidad'])
+            if (ms.nombre).upper() == (formulario.data['materias']).upper() and ms.id_lg_id == lg:
+                print("entra")
+                data = {'id_pd': id, 'id_mp': ms.id_mp, 'cantidad': formulario.data['cantidad']}
+                formulario = basepdForm(data)
+                if formulario.is_valid():
+                    formulario.save()
+                return redirect('/'+str(lg)+'/'+'base'+str(id))
+    return render(request, "basepd/crear.html", {'formulario': formulario})
+
+def delbase(request, id, lg, id2):
+    bases = basepd.objects.get(id_bp=id)
+    bases.delete()
+    return redirect('/'+str(lg)+'/'+'base'+str(id2))
+
+def isactive(): 
+    bases = basepd.objects.all()
+    mezclas = mezcla.objects.all()
+    estado = "Activo"
+    for i in mezclas:
+        materiap = materia_p.objects.get(id_mp=i.id_mp_id)
+        materias = materia_s.objects.get(id_ms=i.id_ms_id)
+        if i.cantidad > materiap.cantidad:
+            estado = "Inactivo"
+        materiap.estado = estado
+        materias.estado = estado
+        materiap.save()
+        materias.save()
+        estado = "Activo"
+    for j in bases:
+        materiap = materia_p.objects.get(id_mp=j.id_mp_id)
+        productos = producto.objects.get(id_pd=j.id_pd_id)
+        if j.cantidad > materiap.cantidad:
+            estado = "Inactivo"
+        materiap.estado = estado
+        productos.estado = estado
+        materiap.save()
+        productos.save()
+        estado = "Activo"
+
 def add_finz(request, lg):
     id = gen_add(lg)
     finanza.objects.get_or_create(fecha=datetime.now().strftime("%x"), id_lg=lg, id_hs=id)
@@ -144,7 +205,7 @@ def agregar_pd(request, lg):
     if formulario.is_valid():
         if formulario.data['descripcion'] != "":
             descripcion = formulario.data['descripcion']
-        data = {'nombre':formulario.data['nombre'], 'descripcion': descripcion, 'precio': formulario.data['precio'], 'id_lg': lg}
+        data = {'nombre':formulario.data['nombre'], 'descripcion': descripcion, 'precio': formulario.data['precio'], 'estado': "Activo", 'id_lg': lg}
         formulario = productoForm(data)
         formulario.save()
         return redirect('/'+str(lg)+'/'+'productos')
@@ -280,21 +341,6 @@ def eliminar_ms(request, id, lg):
     return redirect('/'+str(lg)+'/materias')
 
 #------------------------------mezcla-------------------------------------------------
-
-def isactive(): 
-    mezclas = mezcla.objects.all()
-    estado = "Activo"
-    for i in mezclas:
-        materiap = materia_p.objects.get(id_mp=i.id_mp_id)
-        materias = materia_s.objects.get(id_ms=i.id_ms_id)
-        if i.cantidad > materiap.cantidad:
-            estado = "Inactivo"
-        materiap.estado = estado
-        materias.estado = estado
-        materiap.save()
-        materias.save()
-
-
 def mezclas(request, id, lg):
     mezclas = mezcla.objects.all()
     materiap = materia_p.objects.all()
@@ -485,14 +531,35 @@ def carritos(request, lg):
     return render(request, "carrito/index.html", {'carritos': resultado, 'precio': precio, 'lugar': lg})
 
 def agregar_cr(request, id, lg):
-    data = {'id_pd': id, 'nombre_pd': "null", 'precio': 0, 'id_lg': lg} 
-    formulario = crForm(data)
-    if formulario.is_valid():
-        formulario.save()
-        return redirect('/'+str(lg)+'/carrito')
-    return render(request, "carrito/crear.html", {'formulario': formulario})
+    isactive()
+    pd = producto.objects.get(id_pd=id)
+    if pd.estado == "Inactivo":
+        return render(request, "alerta/faltpd.html", {'lugar': lg})
+    else:
+        bases = basepd.objects.all()
+        materiap = materia_p.objects.all()
+        for bs in bases:
+            if bs.id_pd_id == pd.id_pd:
+                for mp in materiap:
+                    if mp.id_mp == bs.id_mp_id:
+                        mp.cantidad -= bs.cantidad
+                        mp.save()
+        data = {'id_pd': id, 'nombre_pd': "null", 'precio': 0, 'id_lg': lg} 
+        formulario = crForm(data)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('/'+str(lg)+'/carrito')
+        return render(request, "carrito/crear.html", {'formulario': formulario})
 
-def eliminar_cr(request, id, lg):
+def eliminar_cr(request, id, lg, id2):
+    bases = basepd.objects.all()
+    materiap = materia_p.objects.all()
+    for bs in bases:
+        if bs.id_pd_id == id2:
+            for mp in materiap:
+                if mp.id_mp == bs.id_mp_id:
+                    mp.cantidad += bs.cantidad
+                    mp.save()
     carritos = candycarrito.objects.get(id_cr=id)
     carritos.delete()
     return redirect('/'+str(lg)+'/carrito')
@@ -524,9 +591,9 @@ def armados(request, id, lg):
             if mn.id_ps_id == fl.id_ps:
                 for ms in materias:
                     if ms.id_ms == mn.id_ms_id:
-                        ms.id_ms = id
                         ms.descripcion = fl.id_ps
                         ms.tiempo = mn.id_mn
+                        ms.car = id
                         mats.append(ms)
                         for ar in armados:
                             if ar.id_cr_id == carritos.id_cr:
@@ -540,10 +607,20 @@ def armados(request, id, lg):
         precio = 0                    
     return render(request, "armado/index.html", {'posiciones': filtro, 'materias': mats, 'armados': arm, 'precio': precio, 'lugar': lg})
 
-def agregar_ar(request, id, id2, lg, active):
-    if active == "Inactivo":
+def agregar_ar(request, id, id2, lg, ms):
+    isactive()
+    mas = materia_s.objects.get(id_ms=ms)
+    if mas.estado == "Inactivo":
         return render(request, "alerta/falta.html", {'lugar': lg, 'id':id})
     else:
+        mezclas = mezcla.objects.all()
+        materiap = materia_p.objects.all()
+        for mz in mezclas:
+            if mz.id_ms_id == ms:
+                for mp in materiap:
+                    if mp.id_mp == mz.id_mp_id:
+                        mp.cantidad -= mz.cantidad
+                        mp.save()
         data = {'id_cr': id, 'id_mn': id2, 'nombre_ms': 'null', 'precio': 0}
         formulario = arForm(data)
         if formulario.is_valid():
@@ -551,7 +628,17 @@ def agregar_ar(request, id, id2, lg, active):
             return redirect("/"+str(lg)+"/armado"+ str(id))
         return render(request, "armado/crear.html", {'formulario': formulario})
 
-def eliminar_ar(request, id, id2, lg):
+def eliminar_ar(request, id, id2, lg, mn):
+    men = menu.objects.get(id_mn=mn)
+    mas = materia_s.objects.get(id_ms=men.id_ms_id)
+    mezclas = mezcla.objects.all()
+    materiap = materia_p.objects.all()
+    for mz in mezclas:
+        if mz.id_ms_id == mas.id_ms:
+            for mp in materiap:
+                if mp.id_mp == mz.id_mp_id:
+                    mp.cantidad += mz.cantidad
+                    mp.save()
     armados = armado.objects.get(id_ar=id)
     armados.delete()
     return redirect("/"+str(lg)+"/armado"+ str(id2))
@@ -688,7 +775,7 @@ def infactura(request, lg):
         else:
             lugars=tablas.index(ft.id_ft)
             titulos[lugars][1].append(ft.producto)
-            titulos[lugars][2] = ft.precio
+            titulos[lugars][2] += ft.precio
         
     return render(request, "infofactura/index.html", {'informaciones': filtro, 'titulos': titulos, 'lugar': lg, 'nombre': maps})
 

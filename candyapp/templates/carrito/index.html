@@ -25,7 +25,7 @@
                             <td>{{carrito.nombre_pd}}</td>
                             <td>{{carrito.precio}}</td>
                             <td>  
-                                <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_cr' lugar carrito.id_cr %}" role="button">Borrar</a>
+                                <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_cr' lugar carrito.id_cr carrito.id_pd_id %}" role="button">Borrar</a>
                                 | <a name="" id="" class="btn btn-success" href="{% url 'armado' lugar carrito.id_cr %}" role="button">Adiciones</a>
                             </td>
                     </tr>

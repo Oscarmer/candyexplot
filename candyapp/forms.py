@@ -12,6 +12,15 @@ class lgForm(forms.ModelForm):
         model=lugar
         fields='__all__'
 
+class basepdForm(forms.ModelForm):
+    class Meta:
+        model=basepd
+        fields='__all__'
+
+class infBaseForm(forms.Form):
+    materias = forms.CharField(label="Materia secundaria *")
+    cantidad = forms.IntegerField(label="Cantidad *")
+
 class productoForm(forms.ModelForm):
     class Meta:
         model=producto

@@ -7,11 +7,13 @@ class lugar(models.Model):
     id_lg = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50, verbose_name="Lugar")
 
+
 class producto(models.Model):
     id_pd = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, verbose_name="nombre")
     descripcion = models.TextField(max_length=100, null=True, verbose_name="descripcion")
     precio = models.FloatField(verbose_name="Precio base")
+    estado = models.CharField(max_length=20, verbose_name="estado")
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
 
 class materia_s(models.Model):
@@ -19,7 +21,7 @@ class materia_s(models.Model):
     nombre = models.CharField(max_length=20, verbose_name="nombre")
     descripcion = models.TextField(max_length=100, verbose_name="descripcion")
     estado = models.CharField(max_length=20, verbose_name="estado")
-    id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
+    id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)  
 
 class materia_p(models.Model):
     id_mp = models.AutoField(primary_key=True)
@@ -36,6 +38,12 @@ class materia_p(models.Model):
     estado = models.CharField(max_length=20, verbose_name="estado")
     fecha = models.CharField(max_length=50, verbose_name="Fecha")
     id_lg = models.ForeignKey(lugar, verbose_name="Lugar", on_delete=models.CASCADE)
+
+class basepd(models.Model):
+    id_bp = models.AutoField(primary_key=True)
+    id_pd = models.ForeignKey(producto, verbose_name="Producto", on_delete=models.CASCADE)
+    id_mp = models.ForeignKey(materia_p, verbose_name="Materia", on_delete=models.CASCADE) 
+    cantidad = models.IntegerField(verbose_name="cantidad") 
 
 class mezcla(models.Model):
     id_mz = models.AutoField(primary_key=True)

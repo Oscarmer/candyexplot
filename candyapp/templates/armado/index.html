@@ -20,7 +20,7 @@
                             {% if materia.descripcion == posicion.id_ps %}   
                                 <td>{{materia.nombre}}</td>
                                 <td> 
-                                    <a name="" id="agregar" class="btn btn-dark text-white" href="{% url 'agregar_ar' lugar materia.id_ms materia.tiempo materia.estado %}" role="button">+</a>
+                                    <a name="" id="agregar" class="btn btn-dark text-white" href="{% url 'agregar_ar' lugar materia.car materia.tiempo materia.id_ms %}" role="button">+</a>
                                 </td>
                             {% endif %}
                         </tr>
@@ -48,7 +48,7 @@
                         <tr>  
                                 <td>{{armado.nombre_ms}}</td>
                                 <td> 
-                                    <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_ar' lugar armado.id_ar armado.id_cr_id %}" role="button">Borrar</a>
+                                    <a name="" id="" class="btn btn-danger" href="{% url 'eliminar_ar' lugar armado.id_ar armado.id_cr_id armado.id_mn_id %}" role="button">Borrar</a>
                                 </td>
                         </tr>
 

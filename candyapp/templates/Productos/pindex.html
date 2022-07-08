@@ -13,23 +13,24 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>Nombre</th>
                             <th>Precio base</th>
                             <th>Descripcion</th>
+                            <th>Estado</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for producto in productos %}
                         <tr>
-                            <td>{{producto.id_pd}}</td>
                             <td>{{producto.nombre}}</td>
                             <td>{{producto.precio}}</td>
                             <td>{{producto.descripcion}}</td>
+                            <td>{{producto.estado}}</td>
                             <td> 
                                 <a name="" id="" class="btn btn-info" href="{% url 'editar' lugar producto.id_pd %}" role="button">Editar</a> 
                                 |  <a name="" id="" class="btn btn-danger" href="{% url 'eliminar' lugar producto.id_pd %}" role="button">Borrar</a>
+                                |  <a name="" id="" class="btn btn-warning" href="{% url 'basepd' lugar producto.id_pd %}" role="button">Base</a>
                                 |  <a name="" id="" class="btn btn-success" href="{% url 'posiciones' lugar producto.id_pd %}" role="button">Menu</a>
                             </td>
                         </tr>
