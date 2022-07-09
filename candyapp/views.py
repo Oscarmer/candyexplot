@@ -684,8 +684,6 @@ def agregar_en(request, lg):
     posiciones = posicion.objects.all()
     menus = menu.objects.all()
     materias = materia_s.objects.all()
-    mezclas = mezcla.objects.all()
-    materiap = materia_p.objects.all()
     pres = []
     precio = 0
     preciof = 0
@@ -700,17 +698,6 @@ def agregar_en(request, lg):
                             for ms in materias:
                                 if ms.id_ms == mn.id_ms_id:
                                     arm += str(ms.nombre) + " - "
-                                    for mz in mezclas:
-                                        if mz.id_ms_id == ms.id_ms:
-                                            for mp in materiap:
-                                                if mp.id_mp == mz.id_mp_id:
-                                                    estado = "activo"
-                                                    if mp.cantidad - mz.cantidad <= 0 or mp.cantidad - mz.cantidad < mz.cantidad:
-                                                        estado = "inactivo"
-                                                    mp.cantidad = mp.cantidad - mz.cantidad
-                                                    mp.estado = estado
-                                                    mp.save()
-
                             for p in posiciones:
                                 if p.id_ps == mn.id_ps_id:
                                     if p.id_ps not in pres:
@@ -728,7 +715,7 @@ def agregar_en(request, lg):
                         dis = len(arm)
                         arm = arm[:dis-2]
                     data = {'mesa': formulario.data['mesa'], 'cliente': formulario.data['cliente'], 'id_cr': prod.nombre, 'descripcion': arm, 'precio': precio, 'preciot': preciof, 'id_lg': lg} 
-                    finanzas(-1 ,"Venta: "+ prod.nombre, preciof, "/entregado", lg)
+                    finanzas(-1 ,"Venta: "+ prod.nombre, precio, "/entregado", lg)
                     form = enForm(data)
                     arm = " "
                     precio = 0
