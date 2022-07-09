@@ -18,7 +18,7 @@ class basepdForm(forms.ModelForm):
         fields='__all__'
 
 class infBaseForm(forms.Form):
-    materias = forms.CharField(label="Materia secundaria *")
+    materias = forms.CharField(label="Materia prima *")
     cantidad = forms.IntegerField(label="Cantidad *")
 
 class productoForm(forms.ModelForm):
